@@ -113,6 +113,6 @@ Sur l’ensemble du repo, les technologies principales sont :
 
 ***
 
-##Contact
+## Contact
 Mail : theo.eghiazarian@edhec.com
 LinkedIn : https://www.linkedin.com/in/th%C3%A9o-eghiazarian-88623030b/
