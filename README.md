@@ -1,4 +1,4 @@
-# Protfolio - Théo Eghiazarian
+# Portfolio - Théo Eghiazarian
 
 Ce portfolio regroupe plusieurs projets de data science, de finance quantitative et de machine learning couvrant un spectre allant de la modélisation de volatilité au deep learning sur images et à la data science sportive NBA .  
 
@@ -115,4 +115,5 @@ Sur l’ensemble du repo, les technologies principales sont :
 
 ## Contact
 Mail : theo.eghiazarian@edhec.com
+
 LinkedIn : https://www.linkedin.com/in/th%C3%A9o-eghiazarian-88623030b/
