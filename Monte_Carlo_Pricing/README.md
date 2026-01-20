@@ -27,10 +27,11 @@ $$
 
 ### 1. Options européennes
 **Call européen** : Payoff = $$\( \max(S_T - K, 0) \)$$
+
 **Put européen** : Payoff = $$\( \max(K - S_T, 0) \)$$ 
 
 ### 2. Options asiatiques (Average Price)
-Payoff basé sur la moyenne arithmétique du sous-jacent : \( \max(\bar{S} - K, 0) \) 
+Payoff basé sur la moyenne arithmétique du sous-jacent : $$\( \max(\bar{S} - K, 0) \)$$ 
 Moins chères que les options vanilles car la moyenne réduit la volatilité.
 
 ### 3. Options à barrières
@@ -39,18 +40,18 @@ Moins chères que les options vanilles car la moyenne réduit la volatilité.
 
 ### 4. Options Lookback
 Le strike correspond au prix minimum observé pendant la période 
-Payoff = \( S_T - \min(S) \) (achat au plus bas, vente au final)
+Payoff = $$\( S_T - \min(S) \)$$ (achat au plus bas, vente au final)
 
 ## 🛠️ Méthodologie
 
 ### Génération des trajectoires
 Simulation des chemins du sous-jacent selon le modèle de Black-Scholes  :
-- **Drift** : \( (r - 0.5\sigma^2)dt \)
-- **Diffusion** : \( \sigma\sqrt{dt} \cdot Z \) où \( Z \sim \mathcal{N}(0,1) \)
+- **Drift** : $$\( (r - 0.5\sigma^2)dt \)$$
+- **Diffusion** : $$\( \sigma\sqrt{dt} \cdot Z \) où \( Z \sim \mathcal{N}(0,1) \)$$
 
 ### Techniques de réduction de variance
 
-**Variables antithétiques** : Génération de trajectoires avec \( Z \) et \( -Z \) pour réduire la variance de l'estimateur 
+**Variables antithétiques** : Génération de trajectoires avec $$\( Z \)$$ et $$\( -Z \)$$ pour réduire la variance de l'estimateur 
 
 **Variables de contrôle** : Utilisation d'un call européen (dont le prix analytique est connu) comme variable de contrôle pour améliorer la précision du pricing d'options exotiques 
 
