@@ -18,7 +18,10 @@ La méthode de Monte Carlo, introduite par Boyle en 1977 pour le pricing de dér
 ### Formule générale
 Pour toute option, le prix théorique à \( t=0 \) est  : 
 
-\[ \text{Prix}(t=0) = e^{-rT} \times \mathbb{E}[\text{Payoff}(T)] \]
+$$
+\text{Prix}(t=0) = e^{-rT} \times \mathbb{E}[\text{Payoff}(T)]
+$$
+
 
 ## Types d'options pricées
 
