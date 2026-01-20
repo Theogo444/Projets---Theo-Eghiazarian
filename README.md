@@ -28,7 +28,7 @@ Je suis un étudiant en double diplôme Centrale Lille/EDHEC intéressé par la 
 - **Bibliothèques :** pandas, NumPy, scikit-learn, TensorFlow, matplotlib, seaborn
 - **Domaines :** Machine Learning, Analyse statistique, Finance quantitative, Visualisation de données
 
-## 📫 Contact
+##  Contact
 
 - **LinkedIn :** https://www.linkedin.com/in/th%C3%A9o-eghiazarian-88623030b/
 - **Email :** theo.eghiazarian@edhec.com
