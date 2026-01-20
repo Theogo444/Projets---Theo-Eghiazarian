@@ -2,96 +2,106 @@
 
 ## Description
 
-Projet de finance quantitative comparant différentes méthodes d'estimation de la volatilité historique des actifs financiers. Ce projet explore les avantages des estimateurs utilisant les prix OHLC (Open, High, Low, Close) par rapport à l'estimateur classique basé uniquement sur les prix de clôture. 
+Projet de finance quantitative comparant différentes méthodes d'estimation de la volatilité historique des actifs financiers. Ce projet explore quatre approches distinctes pour mesurer et prévoir la volatilité : la volatilité historique classique, les fenêtres glissantes (rolling window), la moyenne mobile exponentielle pondérée (EWMA) et les modèles GARCH. 
 
 ## Objectif
 
-Développer et comparer plusieurs estimateurs de volatilité pour démontrer que les méthodes utilisant l'information intraday (High-Low) sont plus efficaces que la volatilité historique simple. Le projet permet d'identifier l'estimateur le plus adapté selon le contexte et les données disponibles. 
+Développer et comparer plusieurs estimateurs de volatilité pour identifier la méthode la plus adaptée selon le contexte d'utilisation. Le projet permet d'analyser les forces et faiblesses de chaque approche en termes de réactivité, stabilité et capacité prédictive. 
 
 ## Méthodologies d'estimation
 
-### 1. Volatilité historique classique (Close-to-Close)
+### 1. Volatilité Historique (Historic Volatility)
 
 L'estimateur le plus simple, basé uniquement sur les rendements logarithmiques des prix de clôture  : 
-$$\sigma_{CC} = \sqrt{\frac{1}{n-1} \sum_{i=1}^{n} (r_i - \bar{r})^2}$$
+
+$$\sigma_{hist} = \sqrt{\frac{1}{n-1} \sum_{i=1}^{n} (r_i - \bar{r})^2} \times \sqrt{252}$$
 
 où $r_i = \ln(C_i / C_{i-1})$
 
-**Avantages** : Simple, nécessite uniquement les prix de clôture  
-**Inconvénients** : Ignore l'information intraday, moins efficace
+**Avantages** : Simple à calculer, intuitive, nécessite uniquement les prix de clôture 
+**Inconvénients** : Tous les rendements ont le même poids, lente à réagir aux changements  
+**Usage** : Benchmark de référence pour comparaison
 
-### 2. Estimateur de Parkinson (High-Low)
+### 2. Volatilité à Fenêtre Glissante (Rolling Window)
 
-Utilise l'amplitude High-Low pour capturer la volatilité intraday :  $$\sigma_{P} = \sqrt{\frac{1}{4n\ln(2)} \sum_{i=1}^{n} [\ln(H_i/L_i)]^2}$$
+Calcul de la volatilité historique sur une fenêtre temporelle mobile (ex: 30, 60, 90 jours)  : 
+$$\sigma_{roll,t} = \sqrt{\frac{1}{w-1} \sum_{i=t-w+1}^{t} (r_i - \bar{r})^2} \times \sqrt{252}$$
 
-**Efficacité** : ~5 fois plus efficace que Close-to-Close  
-**Hypothèse** : Pas de drift, pas de gap d'ouverture
+où $w$ est la taille de la fenêtre
 
-### 3. Estimateur de Garman-Klass
+**Avantages** : Capture l'évolution temporelle de la volatilité, adaptable via la taille de fenêtre 
+**Inconvénients** : Effet "cliff" quand une observation sort de la fenêtre, choix arbitraire de $w$  
+**Usage** : Analyse de tendances et régimes de volatilité
 
-Améliore Parkinson en intégrant les prix d'ouverture et de clôture  :
-$$\sigma_{GK} = \sqrt{\frac{1}{n} \sum_{i=1}^{n} \left[0.5[\ln(H_i/L_i)]^2 - (2\ln2-1)[\ln(C_i/O_i)]^2\right]}$$
+### 3. EWMA (Exponentially Weighted Moving Average)
 
-**Efficacité** : ~7-8 fois plus efficace que Close-to-Close  
-**Hypothèse** : Marchés continus (pas de gap)
+Moyenne mobile exponentielle donnant plus de poids aux observations récentes  : 
 
-### 4. Estimateur de Rogers-Satchell
+$$\sigma_{EWMA,t}^2 = \lambda \sigma_{EWMA,t-1}^2 + (1-\lambda) r_{t-1}^2$$
 
-Robuste en présence de drift, ne nécessite pas l'hypothèse de moyenne nulle  : 
-$$\sigma_{RS} = \sqrt{\frac{1}{n} \sum_{i=1}^{n} [\ln(H_i/C_i)\ln(H_i/O_i) + \ln(L_i/C_i)\ln(L_i/O_i)]}$$
+où $\lambda$ est le facteur de décroissance (typiquement 0.94 pour données journalières selon RiskMetrics)
 
-**Avantage** : Résistant au drift des prix  
-**Hypothèse** : Pas de gap d'ouverture
+**Avantages** : Réagit rapidement aux chocs récents, poids décroissant continu, pas de paramètre de fenêtre 
+**Inconvénients** : Sensible au choix de $\lambda$, pas de modélisation de la persistance  
+**Usage** : Risk management, calcul de VaR en temps réel
 
-### 5. Estimateur de Yang-Zhang
+### 4. Modèle GARCH(1,1)
 
-Le plus complet, gère à la fois le drift et les gaps d'ouverture  : 
-
-Combine la volatilité overnight, open-to-close, et Rogers-Satchell avec des poids optimaux.
-
-**Efficacité** : ~14 fois plus efficace que Close-to-Close  
-**Avantage** : Aucune restriction, le plus robuste
-
-### 6. Modèle GARCH(1,1)
-
-Modélisation de la volatilité conditionnelle avec effet mémoire  : 
-
+Modélisation de la volatilité conditionnelle avec effet mémoire et clustering  : 
 $$\sigma_t^2 = \omega + \alpha \epsilon_{t-1}^2 + \beta \sigma_{t-1}^2$$
 
-**Avantage** : Capture les clusters de volatilité et l'effet de persistance
+où :
+- $\omega$ : volatilité de long terme
+- $\alpha$ : poids du choc récent (ARCH term)
+- $\beta$ : persistance de la volatilité (GARCH term)
+- $\alpha + \beta < 1$ pour la stationnarité
+
+**Avantages** : Capture les clusters de volatilité, effet de persistance, prévision multi-périodes 
+**Inconvénients** : Plus complexe, nécessite calibration, suppose symétrie des chocs  
+**Usage** : Pricing d'options, prévision de volatilité, modélisation de risque
 
 ## Données utilisées
 
 **Sources** : Yahoo Finance via `yfinance` 
-**Actifs analysés** : Actions américaines (AAPL, GOOG, MSFT)  
-**Période** : Janvier 2018 - Décembre 2025  
-**Fréquence** : Données journalières avec prix OHLC
+**Actifs analysés** : Actions américaines (AAPL, GOOG, MSFT) 
+**Période** : Janvier 2018 - Décembre 2025
+**Fréquence** : Données journalières avec rendements logarithmiques 
 
 ## Technologies utilisées
 
 - **Python 3.x**
-- **NumPy** : Calculs numériques et statistiques
+- **NumPy** : Calculs numériques et statistiques 
 - **pandas** : Manipulation de séries temporelles financières 
-- **matplotlib** : Visualisations des volatilités
+- **matplotlib** : Visualisations des volatilités 
 - **Plotly** : Graphiques interactifs pour comparaisons 
 - **yfinance** : Récupération de données de marché 
-- **arch** : Modèles GARCH pour volatilité conditionnelle 
+- **arch** : Estimation des modèles GARCH 
 
-## Résultats et insights
+## Résultats et comparaison
 
-### Comparaison des estimateurs
+### Comparaison des quatre méthodes
 
 Le projet génère des visualisations comparant :
-- **Évolution temporelle** : Volatilités roulantes sur différentes fenêtres (30, 60, 90 jours)
-- **Réactivité** : Vitesse d'adaptation aux chocs de marché
-- **Efficacité** : Variance des estimations pour un même niveau de volatilité réelle
+- **Évolution temporelle** : Superposition des volatilités estimées par chaque méthode
+- **Réactivité** : Vitesse d'adaptation aux événements de marché (chocs, crashes)
+- **Stabilité** : Variance et bruit dans les estimations
+- **Prévision** : Capacité prédictive pour les périodes futures
 
 ### Observations clés
 
-- Les estimateurs High-Low (Parkinson, Garman-Klass) sont significativement plus efficaces que Close-to-Close [ppl-ai-file-upload.s3.amazonaws](https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/attachments/137473217/3c0c31f2-c26d-4ae1-a9f1-edce1c1310e5/Volatility_Estimator.ipynb)
-- Yang-Zhang offre le meilleur compromis précision/robustesse pour tous types de marchés
-- GARCH capture mieux les clusters de volatilité et la persistance temporelle
-- L'estimateur optimal dépend des caractéristiques du sous-jacent (gaps, drift)
+| Méthode | Réactivité | Stabilité | Prévision | Usage optimal |
+|---------|------------|-----------|-----------|---------------|
+| Historic Volatility | Faible | Élevée | Faible | Analyse long terme |
+| Rolling Window | Moyenne | Moyenne | Moyenne | Analyse de régimes |
+| EWMA | Élevée | Faible | Moyenne | Risk management temps réel |
+| GARCH(1,1) | Adaptative | Moyenne | Élevée | Pricing et prévision |
+
+### Insights pratiques
+
+- **Historic volatility** : Stable mais lente, idéale pour contexte stable 
+- **Rolling window** : Bon compromis, mais sensible au choix de fenêtre 
+- **EWMA** : Très réactive, excellente pour détecter rapidement les changements de régime 
+- **GARCH** : Meilleur modèle prédictif, capture la dynamique temporelle complexe 
 
 ## Utilisation
 
@@ -108,32 +118,35 @@ jupyter notebook Volatility_Estimator.ipynb
 ```python
 import yfinance as yf
 import numpy as np
+from arch import arch_model
 
 # Télécharger les données
 data = yf.download('AAPL', start="2018-01-01", interval="1d")
+data['log_returns'] = np.log(data['Close'] / data['Close'].shift(1))
+data.dropna(inplace=True)
 
-# Calculer l'estimateur de Parkinson
-def parkinson_volatility(data, window=30):
-    hl = np.log(data['High'] / data['Low'])
-    return np.sqrt((1/(4*np.log(2))) * (hl**2).rolling(window).mean()) * np.sqrt(252)
+# 1. Volatilité historique
+hist_vol = data['log_returns'].std() * np.sqrt(252)
 
-vol_parkinson = parkinson_volatility(data)
+# 2. Rolling window (30 jours)
+roll_vol = data['log_returns'].rolling(30).std() * np.sqrt(252)
+
+# 3. EWMA (lambda = 0.94)
+ewma_vol = data['log_returns'].ewm(alpha=1-0.94).std() * np.sqrt(252)
+
+# 4. GARCH(1,1)
+model = arch_model(data['log_returns']*100, vol='Garch', p=1, q=1)
+garch_fit = model.fit(disp='off')
+garch_vol = garch_fit.conditional_volatility / 100 * np.sqrt(252)
 ```
 
 ## Applications pratiques
 
-- **Trading d'options** : Calibration des modèles de pricing (Black-Scholes)
-- **Risk management** : Calcul de VaR et stress testing
-- **Allocation d'actifs** : Optimisation de portefeuille selon Markowitz
-- **Market making** : Ajustement des spreads selon la volatilité intraday
-- **Stratégies de volatilité** : Trading de straddles, strangles basé sur les estimations
-
-## Références théoriques
-
-- **Parkinson (1980)** : "The Extreme Value Method for Estimating the Variance of the Rate of Return"
-- **Garman & Klass (1980)** : "On the Estimation of Security Price Volatilities from Historical Data"
-- **Rogers & Satchell (1991)** : "Estimating Variance from High, Low and Closing Prices"
-- **Yang & Zhang (2000)** : "Drift-Independent Volatility Estimation Based on High, Low, Open, and Close Prices"
+- **Trading d'options** : Calibration des modèles de pricing avec GARCH 
+- **Risk management** : Calcul de VaR avec EWMA pour réactivité optimale 
+- **Allocation d'actifs** : Optimisation de portefeuille selon les volatilités estimées
+- **Backtesting** : Comparaison des performances prédictives des méthodes
+- **Détection de régimes** : Identification de périodes haute/basse volatilité
 
 ## Contact
 
