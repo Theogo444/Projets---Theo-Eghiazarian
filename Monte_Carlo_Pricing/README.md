@@ -51,7 +51,7 @@ Simulation des chemins du sous-jacent selon le modèle de Black-Scholes  :
 
 ### Techniques de réduction de variance
 
-**Variables antithétiques** : Génération de trajectoires avec $$\Z\$$ et $$\-Z\$$ pour réduire la variance de l'estimateur 
+**Variables antithétiques** : Génération de trajectoires avec $$\ Z\$$ et $$\-Z\$$ pour réduire la variance de l'estimateur 
 
 **Variables de contrôle** : Utilisation d'un call européen (dont le prix analytique est connu) comme variable de contrôle pour améliorer la précision du pricing d'options exotiques 
 
@@ -88,7 +88,7 @@ Exemple de pricing avec les paramètres suivants  :
 
 Le projet génère également des visualisations des trajectoires simulées et de la distribution finale du sous-jacent
 
-## 🚀 Utilisation
+## Utilisation
 
 ```python
 # Installer les dépendances
@@ -118,14 +118,14 @@ print(f"Prix : {result['price']:.4f}")
 print(f"IC 95% : [{result['ci_95'][0]:.4f}, {result['ci_95'] [ppl-ai-file-upload.s3.amazonaws](https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/attachments/137473217/7166084f-0607-421c-a334-90b18feb736f/Monte_Carlo_Pricing.ipynb):.4f}]")
 ```
 
-## 🔍 Applications pratiques
+## Applications pratiques
 
 - **Trading et structuration** : Évaluation d'options exotiques sur mesure
 - **Risk management** : Simulation de scénarios de stress testing
 - **Pricing de produits structurés** : Évaluation de produits sans formule fermée
 - **Validation de modèles** : Benchmark contre des méthodes analytiques (Black-Scholes)
 
-## 📧 Contact
+## Contact
 
 Pour plus d'informations sur ce projet, n'hésitez pas à me contacter via theo.eghiazarian@edhec.com ou https://www.linkedin.com/in/th%C3%A9o-eghiazarian-88623030b/.
 
